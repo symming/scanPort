@@ -3,6 +3,9 @@ package main
 import (
 	"image/color"
 	"os"
+	"scanPort/host"
+	"scanPort/mac"
+	"scanPort/scan"
 	"strings"
 
 	"fyne.io/fyne/v2"
@@ -24,7 +27,50 @@ func init() {
 	}
 }
 
-var r1 *widget.Label
+var labelStatus *widget.Label
+
+func showMain(w fyne.Window, menu string) {
+	//内容
+	//w.SetContent(widget.NewLabel("test"))
+	labelTop := widget.NewLabel("基于go语言的端口扫描器的设计与实现")
+
+	b1 := widget.NewButton("主机扫描", func() {
+		showMain(w, "host")
+		labelStatus.SetText("主机扫描...")
+	})
+	b2 := widget.NewButton("端口扫描", func() {
+		showMain(w, "scan")
+		labelStatus.SetText("端口扫描...")
+	})
+	b3 := widget.NewButton("MAC地址获取", func() {
+		showMain(w, "mac")
+		labelStatus.SetText("获取MAC地址...")
+
+	})
+	left := container.NewVBox(b1, b2, b3)
+
+	var rightLayout *fyne.Container
+	if menu == "host" {
+		rightLayout = host.ShowHostScreen()
+	} else if menu == "scan" {
+		rightLayout = scan.ShowScanScreen()
+	} else if menu == "mac" {
+		rightLayout = mac.ShowMacScreen()
+	}
+
+	colorGray := color.RGBA{R: 0, G: 0, B: 0, A: 120}
+	line1 := canvas.NewLine(colorGray)
+	line2 := canvas.NewLine(colorGray)
+	labelStatus = widget.NewLabel("主机扫描...")
+	right := container.NewVBox(line1, labelTop, line2, labelStatus, rightLayout)
+
+	split := container.NewHSplit(left, right)
+	split.Offset = 0.2
+
+	//winmain := container.NewVBox(line1, labelTop, line2, split)
+	w.SetContent(split)
+
+}
 
 func main() {
 	//新建应用
@@ -33,34 +79,7 @@ func main() {
 	w := a.NewWindow("端口扫描器")
 	w.SetMaster()
 
-	//内容
-	//w.SetContent(widget.NewLabel("test"))
-	labelTop := widget.NewLabel("基于go语言的端口扫描器的设计与实现")
-
-	b1 := widget.NewButton("主机扫描", func() {
-		r1.SetText("gaibianle ")
-	})
-	b2 := widget.NewButton("端口扫描", func() {
-		r1.SetText(".....")
-	})
-	b3 := widget.NewButton("MAC地址获取", func() {
-
-	})
-	left := container.NewVBox(b1, b2, b3)
-
-	r1 = widget.NewLabel("扫描")
-	r2 := widget.NewLabel("主机")
-	right := container.NewVBox(r1, r2)
-
-	split := container.NewHSplit(left, right)
-	split.Offset = 0.2
-
-	colorGray := color.RGBA{R: 0, G: 0, B: 0, A: 120}
-	line1 := canvas.NewLine(colorGray)
-	line2 := canvas.NewLine(colorGray)
-
-	winmain := container.NewVBox(line1, labelTop, line2, split)
-	w.SetContent(winmain)
+	showMain(w, "host")
 
 	//设置窗体大小
 	w.Resize(fyne.NewSize(900, 600))
