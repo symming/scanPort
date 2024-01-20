@@ -10,6 +10,7 @@ import (
 
 var labelMessage *widget.Label
 
+// 显示主机扫描布局
 func ShowHostScreen() *fyne.Container {
 	labelStartIP := widget.NewLabel("起始IP地址")
 	txtStartIP := widget.NewEntry()
@@ -23,9 +24,11 @@ func ShowHostScreen() *fyne.Container {
 	})
 	labelNull := widget.NewLabel("")
 
+	//布局
 	rightLayout := container.New(layout.NewGridLayout(3), labelStartIP, txtStartIP, labelNull,
 		labelEndIP, txtEndIP, labelNull, btnStart, btnEnd)
 
+	//扫描结果
 	labelMessage = widget.NewLabel("扫描结果")
 
 	return container.NewVBox(rightLayout, labelMessage)

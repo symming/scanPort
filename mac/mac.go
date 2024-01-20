@@ -1,7 +1,6 @@
 package mac
 
 import (
-	"fmt"
 	"net"
 	"strings"
 
@@ -13,18 +12,20 @@ import (
 
 var labelMessage *widget.Label
 
+// 显示获取MAC地址布局
 func ShowMacScreen() *fyne.Container {
 	labelIP := widget.NewLabel("IP地址")
 	txtIP := widget.NewEntry()
+	//获取MAC地址按钮
 	btnGetMac := widget.NewButton("获取MAC地址", func() {
-		labelMessage.SetText("MAC地址是：" + "16-F6-D8-2A-DB-EA")
+		labelMessage.SetText("MAC地址是:" + GetLocalMac())
 		addr := GetIP()
 		txtIP.SetText(addr)
-		GetLocalMac()
 	})
 	labelNull := widget.NewLabel("")
 	rightLayout := container.New(layout.NewGridLayout(3), labelIP, txtIP, labelNull, labelNull, btnGetMac)
 
+	//扫描结果
 	labelMessage = widget.NewLabel("扫描结果")
 
 	return container.NewVBox(rightLayout, labelMessage)
@@ -43,14 +44,19 @@ func GetIP() string {
 }
 
 // 获取本机MAC地址
-func GetLocalMac() (mac string) {
+func GetLocalMac() string {
 	interfaces, err := net.Interfaces()
 	if err != nil {
 		return "error"
 	}
-	for _, inter := range interfaces {
-		mac := inter.HardwareAddr
-		fmt.Println(mac)
+	var macstr string
+	for i, inter := range interfaces {
+
+		mac := inter.HardwareAddr.String()
+		if i == 0 {
+			macstr = strings.ToUpper(mac)
+		}
+		// fmt.Println(mac)
 	}
-	return mac
+	return macstr
 }

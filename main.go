@@ -34,6 +34,7 @@ func showMain(w fyne.Window, menu string) {
 	//w.SetContent(widget.NewLabel("test"))
 	labelTop := widget.NewLabel("基于go语言的端口扫描器的设计与实现")
 
+	//左侧菜单按钮
 	b1 := widget.NewButton("主机扫描", func() {
 		showMain(w, "host")
 		labelStatus.SetText("主机扫描...")
@@ -47,8 +48,14 @@ func showMain(w fyne.Window, menu string) {
 		labelStatus.SetText("获取MAC地址...")
 
 	})
-	left := container.NewVBox(b1, b2, b3)
+	b4 := widget.NewButton("报告", func() {
+		// showMain(w, "mac")
+		labelStatus.SetText("结果...")
+	})
+	//左侧容器
+	left := container.NewVBox(b1, b2, b3, b4)
 
+	//右侧动态布局
 	var rightLayout *fyne.Container
 	if menu == "host" {
 		rightLayout = host.ShowHostScreen()
@@ -62,8 +69,10 @@ func showMain(w fyne.Window, menu string) {
 	line1 := canvas.NewLine(colorGray)
 	line2 := canvas.NewLine(colorGray)
 	labelStatus = widget.NewLabel("主机扫描...")
+	//右侧容器
 	right := container.NewVBox(line1, labelTop, line2, labelStatus, rightLayout)
 
+	//左右分割
 	split := container.NewHSplit(left, right)
 	split.Offset = 0.2
 
@@ -79,6 +88,7 @@ func main() {
 	w := a.NewWindow("端口扫描器")
 	w.SetMaster()
 
+	//展示主界面
 	showMain(w, "host")
 
 	//设置窗体大小
